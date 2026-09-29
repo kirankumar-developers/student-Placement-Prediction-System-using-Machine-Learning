@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Predict Student Placement{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Header Card -->
+            <div class="custom-card border-top border-4 border-primary">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                    <div>
+                        <h2 class="card-title-custom mb-1">
+                            <i class="fa-solid fa-user-graduate text-primary"></i>
+                            Student Placement Prediction Form
+                        </h2>
+                        <p class="text-muted small mb-0">
+                            Enter the student's academic metrics and skill ratings. Features are dynamically mapped directly to <code>student_placement.csv</code>.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Quick Load Presets -->
+                <div class="p-3 bg-light rounded-3 border mb-4">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                        <span class="small fw-bold text-dark">
+                            <i class="fa-solid fa-wand-magic-sparkles text-warning me-1"></i> Quick Test Profiles:
+                        </span>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="preset-btn" data-preset="high">
+                                <i class="fa-solid fa-star text-warning me-1"></i> Top Performer Profile
+                            </button>
+                            <button type="button" class="preset-btn" data-preset="moderate">
+                                <i class="fa-solid fa-scale-balanced text-primary me-1"></i> Average Student Profile
+                            </button>
+                            <button type="button" class="preset-btn" data-preset="low">
+                                <i class="fa-solid fa-triangle-exclamation text-danger me-1"></i> At-Risk Profile
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prediction Form -->
+                <form action="{{ url_for('predict') }}" method="POST" id="predictionForm" class="needs-validation">
+                    
+                    <!-- Algorithm Selection -->
+                    <div class="mb-4 p-3 rounded-3 bg-primary-subtle border border-primary-subtle">
+                        <label for="model_select" class="form-label-custom mb-2">
+                            <span><i class="fa-solid fa-robot text-primary me-2"></i>Select Machine Learning Algorithm</span>
+                            <span class="text-muted small">Default is Champion Model</span>
+                        </label>
+                        <select name="selected_model" id="model_select" class="form-select form-select-custom">
+                            <option value="best_model" selected>★ Best Model (Logistic Regression - Recommended by F1 Score)</option>
+                            {% for m in available_models %}
+                            <option value="{{ m }}">{{ m }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Dynamic Input Grid -->
+                    <div class="row g-4 mb-4">
+                        {% for feat_name, meta in features.items() %}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="field_{{ feat_name }}" class="form-label-custom">
+                                    <span>{{ meta.label }}</span>
+                                    {% if meta.is_numeric and meta.min is not none and meta.max is not none %}
+                                    <span class="badge bg-light text-muted border">
+                                        {{ meta.min }} - {{ meta.max }}
+                                    </span>
+                                    {% endif %}
+                                </label>
+
+                                {% if meta.is_numeric %}
+                                <div class="input-group">
+                                    <input 
+                                        type="number" 
+                                        class="form-control form-control-custom" 
+                                        id="field_{{ feat_name }}" 
+                                        name="{{ feat_name }}" 
+                                        value="{{ meta.mean if meta.mean is not none else '' }}"
+                                        step="{{ meta.step }}"
+                                        min="0"
+                                        max="{{ (meta.max * 1.5)|round(0) if meta.max else 100 }}"
+                                        required
+                                    >
+                                </div>
+                                <div class="field-help">
+                                    Dataset Average: <strong>{{ meta.mean }}</strong> (Std: {{ meta.std }})
+                                </div>
+                                {% else %}
+                                <select class="form-select form-select-custom" id="field_{{ feat_name }}" name="{{ feat_name }}" required>
+                                    <option value="" disabled selected>Select {{ meta.label }}</option>
+                                    {% for val in meta.unique_values %}
+                                    <option value="{{ val }}">{{ val }}</option>
+                                    {% endfor %}
+                                </select>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Submit Actions -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center pt-3 border-top">
+                        <button type="reset" class="btn btn-secondary-custom">
+                            <i class="fa-solid fa-rotate-left me-1"></i> Reset Fields
+                        </button>
+                        <button type="submit" class="btn btn-primary-custom btn-lg">
+                            <i class="fa-solid fa-bullseye me-2"></i> Generate Placement Forecast
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

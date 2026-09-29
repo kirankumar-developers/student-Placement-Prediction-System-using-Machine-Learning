@@ -1,0 +1,168 @@
+{
+    "best_model": "Logistic Regression",
+    "criteria": "F1 Score and Accuracy",
+    "comparison": [
+        {
+            "Algorithm": "Logistic Regression",
+            "Accuracy": 0.855,
+            "Precision": 0.8933,
+            "Recall": 0.9116,
+            "F1 Score": 0.9024,
+            "ROC AUC": 0.9127,
+            "CV Accuracy Mean": 0.8875,
+            "CV Accuracy Std": 0.0181,
+            "CV F1 Mean": 0.9233,
+            "True Negatives": 37,
+            "False Positives": 16,
+            "False Negatives": 13,
+            "True Positives": 134,
+            "File Slug": "logistic_regression"
+        },
+        {
+            "Algorithm": "Decision Tree",
+            "Accuracy": 0.805,
+            "Precision": 0.8649,
+            "Recall": 0.8707,
+            "F1 Score": 0.8678,
+            "ROC AUC": 0.8046,
+            "CV Accuracy Mean": 0.8475,
+            "CV Accuracy Std": 0.0184,
+            "CV F1 Mean": 0.8943,
+            "True Negatives": 33,
+            "False Positives": 20,
+            "False Negatives": 19,
+            "True Positives": 128,
+            "File Slug": "decision_tree"
+        },
+        {
+            "Algorithm": "Random Forest",
+            "Accuracy": 0.825,
+            "Precision": 0.8836,
+            "Recall": 0.8776,
+            "F1 Score": 0.8805,
+            "ROC AUC": 0.8931,
+            "CV Accuracy Mean": 0.8862,
+            "CV Accuracy Std": 0.0165,
+            "CV F1 Mean": 0.9222,
+            "True Negatives": 36,
+            "False Positives": 17,
+            "False Negatives": 18,
+            "True Positives": 129,
+            "File Slug": "random_forest"
+        },
+        {
+            "Algorithm": "K-Nearest Neighbors",
+            "Accuracy": 0.84,
+            "Precision": 0.8859,
+            "Recall": 0.898,
+            "F1 Score": 0.8919,
+            "ROC AUC": 0.8706,
+            "CV Accuracy Mean": 0.8525,
+            "CV Accuracy Std": 0.0188,
+            "CV F1 Mean": 0.9004,
+            "True Negatives": 36,
+            "False Positives": 17,
+            "False Negatives": 15,
+            "True Positives": 132,
+            "File Slug": "k_nearest_neighbors"
+        },
+        {
+            "Algorithm": "Support Vector Machine",
+            "Accuracy": 0.84,
+            "Precision": 0.8808,
+            "Recall": 0.9048,
+            "F1 Score": 0.8926,
+            "ROC AUC": 0.8673,
+            "CV Accuracy Mean": 0.8662,
+            "CV Accuracy Std": 0.0233,
+            "CV F1 Mean": 0.9086,
+            "True Negatives": 35,
+            "False Positives": 18,
+            "False Negatives": 14,
+            "True Positives": 133,
+            "File Slug": "support_vector_machine"
+        }
+    ],
+    "confusion_matrices": {
+        "Logistic Regression": {
+            "matrix": [
+                [
+                    37,
+                    16
+                ],
+                [
+                    13,
+                    134
+                ]
+            ],
+            "TN": 37,
+            "FP": 16,
+            "FN": 13,
+            "TP": 134
+        },
+        "Decision Tree": {
+            "matrix": [
+                [
+                    33,
+                    20
+                ],
+                [
+                    19,
+                    128
+                ]
+            ],
+            "TN": 33,
+            "FP": 20,
+            "FN": 19,
+            "TP": 128
+        },
+        "Random Forest": {
+            "matrix": [
+                [
+                    36,
+                    17
+                ],
+                [
+                    18,
+                    129
+                ]
+            ],
+            "TN": 36,
+            "FP": 17,
+            "FN": 18,
+            "TP": 129
+        },
+        "K-Nearest Neighbors": {
+            "matrix": [
+                [
+                    36,
+                    17
+                ],
+                [
+                    15,
+                    132
+                ]
+            ],
+            "TN": 36,
+            "FP": 17,
+            "FN": 15,
+            "TP": 132
+        },
+        "Support Vector Machine": {
+            "matrix": [
+                [
+                    35,
+                    18
+                ],
+                [
+                    14,
+                    133
+                ]
+            ],
+            "TN": 35,
+            "FP": 18,
+            "FN": 14,
+            "TP": 133
+        }
+    }
+}

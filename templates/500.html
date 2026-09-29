@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error (500){% endblock %}
+
+{% block content %}
+<div class="container text-center py-5">
+    <div class="custom-card col-md-8 mx-auto p-5">
+        <i class="fa-solid fa-triangle-exclamation display-1 text-danger mb-3"></i>
+        <h2 class="fw-bold mb-2">500 - Application Error</h2>
+        <p class="text-muted mb-4">An unexpected error occurred while processing the request. Please verify model training or input parameters.</p>
+        <a href="{{ url_for('index') }}" class="btn btn-primary-custom">
+            <i class="fa-solid fa-house me-2"></i> Return to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

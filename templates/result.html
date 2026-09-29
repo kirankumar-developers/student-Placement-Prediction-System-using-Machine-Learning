@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction Result - {{ result.prediction }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <!-- Result Hero Card -->
+            <div class="custom-card {{ 'result-card-placed' if result.prediction == 'Placed' else 'result-card-not-placed' }} text-center p-4 p-md-5 mb-4">
+                <div class="mb-3">
+                    <span class="badge bg-dark bg-opacity-75 text-white px-3 py-2 rounded-pill small text-uppercase">
+                        <i class="fa-solid fa-microchip me-1"></i> Model: {{ result.model_used }}
+                    </span>
+                </div>
+
+                <div class="my-3">
+                    <span class="status-badge-hero {{ 'status-hero-placed' if result.prediction == 'Placed' else 'status-hero-not-placed' }}">
+                        <i class="fa-solid {{ 'fa-circle-check' if result.prediction == 'Placed' else 'fa-circle-xmark' }} me-2"></i>
+                        {{ result.prediction|upper }}
+                    </span>
+                </div>
+
+                <h3 class="fw-bold mt-3 mb-2 text-dark">
+                    {% if result.prediction == 'Placed' %}
+                    High Likelihood of Campus Placement Success
+                    {% else %}
+                    Placement Risk Detected - Needs Skill & Profile Uplift
+                    {% endif %}
+                </h3>
+
+                <p class="text-muted col-md-8 mx-auto mb-4">
+                    Based on academic performance, technical scores, and historical placement records in <code>student_placement.csv</code>.
+                </p>
+
+                <!-- Confidence Gauge -->
+                <div class="p-4 bg-white rounded-4 border shadow-sm col-md-10 mx-auto">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold text-dark">Prediction Confidence</span>
+                        <span class="fs-4 fw-extrabold {{ 'text-success' if result.prediction == 'Placed' else 'text-danger' }}">
+                            {{ result.confidence }}%
+                        </span>
+                    </div>
+
+                    <div class="gauge-container mb-3">
+                        <div class="{{ 'gauge-fill-placed' if result.prediction == 'Placed' else 'gauge-fill-not-placed' }}" style="width: {{ result.confidence }}%;"></div>
+                    </div>
+
+                    {% if result.probabilities %}
+                    <div class="row text-center pt-2 border-top">
+                        <div class="col-6 border-end">
+                            <span class="small text-muted d-block">Placed Probability</span>
+                            <strong class="text-success fs-5">{{ result.probabilities['Placed'] }}%</strong>
+                        </div>
+                        <div class="col-6">
+                            <span class="small text-muted d-block">Not Placed Probability</span>
+                            <strong class="text-danger fs-5">{{ result.probabilities['Not Placed'] }}%</strong>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Student Metrics Summary vs Cohort Average -->
+            <div class="custom-card mb-4">
+                <h4 class="card-title-custom mb-3">
+                    <i class="fa-solid fa-chart-simple text-primary"></i>
+                    Student Profile vs Cohort Average
+                </h4>
+                <div class="row g-3">
+                    {% for item in result.insights %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="p-3 bg-light rounded-3 border h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="text-dark small">{{ item.label }}</strong>
+                                <span class="badge {{ 'bg-success' if item.status == 'positive' else ('bg-danger' if item.status == 'danger' else 'bg-warning text-dark') }}">
+                                    {{ item.status|upper }}
+                                </span>
+                            </div>
+                            <div class="fs-5 fw-bold text-dark mb-1">{{ item.value }}</div>
+                            <div class="small text-muted">
+                                {{ item.message }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Actionable Recommendations & Guidance -->
+            <div class="custom-card mb-4">
+                <h4 class="card-title-custom mb-3">
+                    <i class="fa-solid fa-lightbulb text-warning"></i>
+                    Actionable Recommendations for Placement Preparation
+                </h4>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded-3 border h-100">
+                            <h6 class="fw-bold text-dark mb-2">
+                                <i class="fa-solid fa-code text-primary me-2"></i>Technical & Coding Readiness
+                            </h6>
+                            <p class="small text-muted mb-0">
+                                Maintain consistent practice on Data Structures, Algorithms, and system design. High technical skill scores correlate strongly with placement probability.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded-3 border h-100">
+                            <h6 class="fw-bold text-dark mb-2">
+                                <i class="fa-solid fa-comments text-success me-2"></i>Aptitude & Communication Skills
+                            </h6>
+                            <p class="small text-muted mb-0">
+                                Participate in group discussions and mock interviews. Recruiters filter heavily on aptitude screening rounds.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Disclaimer Alert -->
+            <div class="alert alert-warning border-warning-subtle d-flex align-items-center shadow-sm mb-4" role="alert">
+                <i class="fa-solid fa-circle-info fs-4 me-3 text-warning"></i>
+                <div class="small">
+                    <strong>Important Disclaimer:</strong> Machine learning confidence scores reflect statistical approximations based on the training dataset (<code>student_placement.csv</code>) and do not guarantee future corporate recruitment decisions.
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-5">
+                <a href="{{ url_for('predict') }}" class="btn btn-primary-custom">
+                    <i class="fa-solid fa-arrow-left me-2"></i> Evaluate Another Student
+                </a>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('comparison') }}" class="btn btn-secondary-custom">
+                        <i class="fa-solid fa-scale-balanced me-1"></i> Compare Model Benchmarks
+                    </a>
+                    <button type="button" class="btn btn-outline-dark" onclick="window.print()">
+                        <i class="fa-solid fa-print me-1"></i> Print / Save Report
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Student Placement Prediction System{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Banner -->
+    <div class="hero-gradient p-4 p-md-5 text-white">
+        <div class="row align-items-center position-relative" style="z-index: 2;">
+            <div class="col-lg-8">
+                <span class="badge bg-primary px-3 py-2 rounded-pill mb-3 text-uppercase fw-bold">
+                    <i class="fa-solid fa-microchip me-1"></i> Machine Learning Classification Pipeline
+                </span>
+                <h1 class="display-5 fw-bold mb-3">Student Placement Prediction & Benchmark System</h1>
+                <p class="lead text-light opacity-90 mb-4">
+                    Leverage trained machine learning algorithms to predict student campus placement outcomes based on academic scores, technical skills, internships, and project experience.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{{ url_for('predict') }}" class="btn btn-light btn-lg fw-bold text-primary px-4 py-2 rounded-pill shadow-sm">
+                        <i class="fa-solid fa-user-check me-2"></i> Predict Student Placement
+                    </a>
+                    <a href="{{ url_for('comparison') }}" class="btn btn-outline-light btn-lg fw-semibold px-4 py-2 rounded-pill">
+                        <i class="fa-solid fa-chart-column me-2"></i> Compare 5 ML Algorithms
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center d-none d-lg-block">
+                <div class="p-3 bg-white bg-opacity-10 rounded-4 border border-white border-opacity-25 shadow">
+                    <i class="fa-solid fa-brain-circuit display-1 text-info opacity-75 mb-3"></i>
+                    <h5 class="fw-bold text-white mb-1">Champion Model</h5>
+                    <span class="badge bg-success px-3 py-2 fs-6 rounded-pill">
+                        {{ metrics.best_model }}
+                    </span>
+                    <p class="small text-light opacity-75 mt-2 mb-0">Highest F1 Score on Test Cohort</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4 Dataset KPI Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="kpi-card">
+                <div class="kpi-icon-box kpi-icon-primary">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="kpi-value">{{ total_students }}</div>
+                <div class="kpi-label">Total Student Records</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="kpi-card">
+                <div class="kpi-icon-box kpi-icon-success">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="kpi-value text-success">{{ placed_count }}</div>
+                <div class="kpi-label">Placed Students</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="kpi-card">
+                <div class="kpi-icon-box kpi-icon-danger">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </div>
+                <div class="kpi-value text-danger">{{ not_placed_count }}</div>
+                <div class="kpi-label">Not Placed Students</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="kpi-card">
+                <div class="kpi-icon-box kpi-icon-purple">
+                    <i class="fa-solid fa-percent"></i>
+                </div>
+                <div class="kpi-value text-primary">{{ placement_rate }}%</div>
+                <div class="kpi-label">Overall Placement Rate</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Middle Section: Model Comparison Leaderboard & Distribution -->
+    <div class="row g-4 mb-4">
+        <!-- Model Benchmark Leaderboard -->
+        <div class="col-lg-8">
+            <div class="custom-card h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="card-title-custom mb-0">
+                        <i class="fa-solid fa-trophy text-warning"></i>
+                        Algorithm Performance Leaderboard
+                    </h4>
+                    <a href="{{ url_for('comparison') }}" class="btn btn-sm btn-outline-primary rounded-pill">
+                        Full Breakdown <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th>Algorithm</th>
+                                <th>Accuracy</th>
+                                <th>Precision</th>
+                                <th>Recall</th>
+                                <th>F1 Score</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for m in models_summary %}
+                            <tr class="{% if m.Algorithm == metrics.best_model %}best-row{% endif %}">
+                                <td>
+                                    <strong>{{ m.Algorithm }}</strong>
+                                    {% if m.Algorithm == metrics.best_model %}
+                                    <span class="badge-best ms-2">Best Model</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ (m.Accuracy * 100)|round(1) }}%</td>
+                                <td>{{ (m.Precision * 100)|round(1) }}%</td>
+                                <td>{{ (m.Recall * 100)|round(1) }}%</td>
+                                <td>
+                                    <span class="fw-bold text-primary">{{ (m['F1 Score'] * 100)|round(1) }}%</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border">Tested (200 Test)</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Class Distribution Chart -->
+        <div class="col-lg-4">
+            <div class="custom-card h-100">
+                <h4 class="card-title-custom mb-3">
+                    <i class="fa-solid fa-chart-pie text-secondary"></i>
+                    Cohort Distribution
+                </h4>
+                <div style="height: 220px; position: relative;">
+                    <canvas id="chartOverviewDist"></canvas>
+                </div>
+                <div class="text-center mt-3 pt-2 border-top">
+                    <small class="text-muted">
+                        Dataset target variable: <strong>{{ target_col }}</strong>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Overview & Quick Action -->
+    <div class="custom-card">
+        <h4 class="card-title-custom mb-3">
+            <i class="fa-solid fa-sliders text-primary"></i>
+            Actual Dataset Input Features
+        </h4>
+        <p class="text-muted small mb-4">
+            The machine learning pipeline has been configured specifically on the 10 real input dimensions present in <code>student_placement.csv</code>:
+        </p>
+        <div class="row g-3">
+            {% for name, meta in features.items() %}
+            <div class="col-md-6 col-lg-4">
+                <div class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong class="text-dark">{{ meta.label }}</strong>
+                        <span class="badge bg-secondary-subtle text-secondary border">{{ meta.dtype }}</span>
+                    </div>
+                    <div class="small text-muted">
+                        Range: <strong>{{ meta.min }}</strong> - <strong>{{ meta.max }}</strong> | Mean: <strong>{{ meta.mean }}</strong>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('predict') }}" class="btn btn-primary-custom px-4 py-2">
+                <i class="fa-solid fa-play me-2"></i> Launch Interactive Prediction Form
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    window.dashboardData = {
+        placed_count: {{ placed_count }},
+        not_placed_count: {{ not_placed_count }}
+    };
+</script>
+{% endblock %}

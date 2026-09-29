@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Visual Analytics Gallery - Student Placement Prediction{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="card-title-custom mb-1">
+                <i class="fa-solid fa-chart-pie text-primary"></i>
+                Data Science & Model Visualization Gallery
+            </h2>
+            <p class="text-muted small mb-0">
+                High-resolution statistical visualizations generated using Matplotlib and Seaborn directly from <code>student_placement.csv</code>.
+            </p>
+        </div>
+        <div class="mt-2 mt-md-0">
+            <span class="badge bg-primary px-3 py-2 rounded-pill">
+                <i class="fa-solid fa-images me-1"></i> 10 Visualizations Generated
+            </span>
+        </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="row g-4">
+        
+        <!-- 1. Placement Status Distribution -->
+        <div class="col-lg-6">
+            <div class="custom-card h-100">
+                <h5 class="fw-bold text-dark mb-2">1. Placement Status Distribution</h5>
+                <p class="small text-muted mb-3">Overall cohort breakdown for Placed vs Not Placed students.</p>
+                <div class="chart-img-card">
+                    <img src="{{ url_for('static', filename='images/placement_distribution.png') }}" alt="Placement Distribution" class="img-fluid" data-bs-toggle="modal" data-bs-target="#imgModal" onclick="showModalImage(this.src, 'Placement Status Distribution')">
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. CGPA Distribution -->
+        <div class="col-lg-6">
+            <div class="custom-card h-100">
+                <h5 class="fw-bold text-dark mb-2">2. CGPA Distribution by Status</h5>
+                <p class="small text-muted mb-3">KDE and histogram overlay illustrating academic GPA influence on placement.</p>
+                <div class="chart-img-card">
+                    <img src="{{ url_for('static', filename='images/cgpa_distribution.png') }}" alt="CGPA Distribution" class="img-fluid" data-bs-toggle="modal" data-bs-target="#imgModal" onclick="showModalImage(this.src, 'CGPA Distribution by Status')">
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Correlation Heatmap -->
+        <div class="col-lg-6">
+            <div class="custom-card h-100">
+                <h5 class="fw-bold text-dark mb-2">3. Feature Correlation Matrix</h5>
+                <p class="small text-muted mb-3">Pairwise Pearson correlation coefficients between numerical metrics.</p>
+                <div class="chart-img-card">
+                    <img src="{{ url_for('static', filename='images/correlation_heatmap.png') }}" alt="Correlation Heatmap" class="img-fluid" data-bs-toggle="modal" data-bs-target="#imgModal" onclick="showModalImage(this.src, 'Feature Correlation Matrix')">
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Feature Importance -->
+        <div class="col-lg-6">
+            <div class="custom-card h-100">
+                <h5 class="fw-bold text-dark mb-2">4. Feature Importance Rankings</h5>
+                <p class="small text-muted mb-3">Gini impurity reduction across tree-based ensembles.</p>
+                <div class="chart-img-card">
+                    <img src="{{ url_for('static', filename='images/feature_importance.png') }}" alt="Feature Importance" class="img-fluid" data-bs-toggle="modal" data-bs-target="#imgModal" onclick="showModalImage(this.src, 'Feature Importance Rankings')">
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. All Confusion Matrices -->
+        <div class="col-12">
+            <div class="custom-card">
+                <h5 class="fw-bold text-dark mb-2">5. Confusion Matrix Benchmark Grid</h5>
+                <p class="small text-muted mb-3">Grid comparison of classification error distributions (TN, FP, FN, TP) for all 5 models.</p>
+                <div class="chart-img-card">
+                    <img src="{{ url_for('static', filename='images/all_confusion_matrices.png') }}" alt="All Confusion Matrices" class="img-fluid" data-bs-toggle="modal" data-bs-target="#imgModal" onclick="showModalImage(this.src, 'Confusion Matrix Benchmark Grid')">
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. F1 Score Comparison -->
+        <div class="col-lg-6">
+            <div class="custom-card h-100">
+                <h5 class="fw-bold text-dark mb-2">6. Model F1 Score Benchmark</h5>
+                <p class="small text-muted mb-3">Primary model selection criterion harmonic mean comparison.</p>
+                <div class="chart-img-card">
+                    <img src="{{ url_for('static', filename='images/f1_comparison.png') }}" alt="F1 Score Comparison" class="img-fluid" data-bs-toggle="modal" data-bs-target="#imgModal" onclick="showModalImage(this.src, 'Model F1 Score Benchmark')">
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. Accuracy Comparison -->
+        <div class="col-lg-6">
+            <div class="custom-card h-100">
+                <h5 class="fw-bold text-dark mb-2">7. Model Accuracy Benchmark</h5>
+                <p class="small text-muted mb-3">Holdout test classification accuracy comparison.</p>
+                <div class="chart-img-card">
+                    <img src="{{ url_for('static', filename='images/accuracy_comparison.png') }}" alt="Accuracy Comparison" class="img-fluid" data-bs-toggle="modal" data-bs-target="#imgModal" onclick="showModalImage(this.src, 'Model Accuracy Benchmark')">
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. Precision Comparison -->
+        <div class="col-lg-6">
+            <div class="custom-card h-100">
+                <h5 class="fw-bold text-dark mb-2">8. Model Precision Benchmark</h5>
+                <p class="small text-muted mb-3">True positive rate among predicted placements.</p>
+                <div class="chart-img-card">
+                    <img src="{{ url_for('static', filename='images/precision_comparison.png') }}" alt="Precision Comparison" class="img-fluid" data-bs-toggle="modal" data-bs-target="#imgModal" onclick="showModalImage(this.src, 'Model Precision Benchmark')">
+                </div>
+            </div>
+        </div>
+
+        <!-- 9. Recall Comparison -->
+        <div class="col-lg-6">
+            <div class="custom-card h-100">
+                <h5 class="fw-bold text-dark mb-2">9. Model Recall Benchmark</h5>
+                <p class="small text-muted mb-3">Sensitivity in capturing placed student candidates.</p>
+                <div class="chart-img-card">
+                    <img src="{{ url_for('static', filename='images/recall_comparison.png') }}" alt="Recall Comparison" class="img-fluid" data-bs-toggle="modal" data-bs-target="#imgModal" onclick="showModalImage(this.src, 'Model Recall Benchmark')">
+                </div>
+            </div>
+        </div>
+
+        <!-- 10. Actual vs Predicted -->
+        <div class="col-12">
+            <div class="custom-card">
+                <h5 class="fw-bold text-dark mb-2">10. Actual vs Predicted Distribution (Champion Model)</h5>
+                <p class="small text-muted mb-3">Comparison between true ground truth distribution and model predictions on test cohort.</p>
+                <div class="chart-img-card">
+                    <img src="{{ url_for('static', filename='images/actual_vs_predicted.png') }}" alt="Actual vs Predicted" class="img-fluid" data-bs-toggle="modal" data-bs-target="#imgModal" onclick="showModalImage(this.src, 'Actual vs Predicted Distribution')">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Zoom Modal -->
+<div class="modal fade" id="imgModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="imgModalTitle">Visualization Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-2">
+                <img id="modalImgTarget" src="" alt="Zoomed Chart" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function showModalImage(src, title) {
+        document.getElementById('modalImgTarget').src = src;
+        document.getElementById('imgModalTitle').innerText = title;
+    }
+</script>
+{% endblock %}
