@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: student-placement-prediction
+    env: python
+    buildCommand: pip install -r requirements.txt && python train_model.py
+    startCommand: gunicorn app:app
+    plan: free
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
